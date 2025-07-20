@@ -6,6 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"go-echo-app/internal/handlers"
 )
 
 func main() {
@@ -43,6 +44,16 @@ func setupRoutes(e *echo.Echo) {
 	api.PUT("/users/:id", updateUser)
 	api.DELETE("/users/:id", deleteUser)
 
+	// HTTP中转API路由
+	api.POST("/proxy", handlers.ProxyRequest)
+	api.GET("/proxy", handlers.ProxyRequest)
+	api.PUT("/proxy", handlers.ProxyRequest)
+	api.DELETE("/proxy", handlers.ProxyRequest)
+	api.PATCH("/proxy", handlers.ProxyRequest)
+	
+	// 带配置的HTTP中转API
+	api.POST("/proxy/config", handlers.ProxyRequestWithConfig)
+
 	// 根路径
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{
@@ -51,6 +62,8 @@ func setupRoutes(e *echo.Echo) {
 		})
 	})
 }
+
+
 
 // 用户相关的处理函数
 func getUsers(c echo.Context) error {
